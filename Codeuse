@@ -1,0 +1,30 @@
+// déclaration des constantes et des variables globales 
+#define Broche_PWM 3 // la broche que l'on utilise pour la commande
+const int Ntotal = 11; // total des fronts montants et descendants pour un tour 
+int Nfront = 0; //nombre de fronts détectés
+long date = millis(); //date actuelle 
+
+void septup { //Initialisation
+// Interruption 0 exécutant la fonction "compter" à chaque front sur l'entrée 2
+attachInterrupt(0, compter, CHANGE);
+
+//Initialisation du hacheur 
+pinMode(12, OUTPUT); piMode(9, OUTPUT); //Utilisation de la sortie A, sécurité
+digitalWrite(12, HIGH); digitalWrite(9, LOW); //Sens de rotation, envoi de puissance 
+
+Serial.begin(9600); //Initialisation de la liaison série avec un débit de 9600 baud
+}
+
+void loop() {  // Programme principal : Mode manu
+if (millis() - date > 100){ //Au bout de 100ms à partir de la date précédente 
+  float Vitesse = Estime(Nfront); //On estime la vitesse à partir de Nfront par l'appel d'une fonction qui a Nfront comme argument
+  int variable = analogRead(A3); //On fait une acquisition sur la broche A3
+  int Commande = map(variable, 0, 1023, 0, 255); //Mise à l'échelle
+  analogWrite (Broche_PWM, Commande); //On écrit Commande sur la broche PWM 
+  float Alpha = (float) 100*Commande/255; //On calcule le rapport cyclique en %
+  
+  Affiche(Vitesse, Alpha);
+  }
+}
+
+[A FINIR]
