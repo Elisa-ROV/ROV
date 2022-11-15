@@ -1,0 +1,9 @@
+from picamera import * #Importation de la bibliotheque de picamera
+from time import sleep #Importation de la fonction"sleep" de la bibliotheque time et cette fonction est un minuteur
+
+camera = PiCamera() # Attribution d'un nom de variable "camera"
+camera.rotation = 180 # Rotation de l'image camera est de 180° pour que l'image s'affiche à l'endroit
+
+camera.start_preview() # Debut de l'enregistrement video
+sleep(60) # Temps d'enregistrement
+camera.stop_preview() # Fin d'enregistrement
