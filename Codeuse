@@ -1,43 +1,47 @@
-#define PWM 3
-const int Ntotal = 11;
-int Nfonrt = 0;
-long date = millis ();
+//déclaration des constantes et des variables globales
+#define PWM 3 // la broche que l'on utilise pour la commande
+const int Ntotal = 11; // total des fronts montatits.
+int Nfonrt = 0; // nombre de fronts détectés
+long date = millis (); // date actuelle
 
-void setup() {
-  attachInterrupt(0 , compteur , CHANGE);
+void setup() { //Initiallisation
+// Interruption O exécutant la fonction "compter" a chaque front
+  attachInterrupt(0 , compteur , CHANGE); 
   
-  pinMode(12,OUTPUT); pinMode(9,OUTPUT);
-  digitalWrite(12,HIGH); digitalWrite(9,LOW);
+// Initialisation du hacheur 
+  pinMode(12,OUTPUT); pinMode(9,OUTPUT); //Utilisation de la sortie A, sécurité
+  digitalWrite(12,HIGH); digitalWrite(9,LOW); //sens de rotation, envoi de puissance
   
-  Serial.begin(9600);
+  Serial.begin(9600); // Initialisation de la liaison série avec un débit de 9600 baud
   }
   
-  void loop(){
-    if (millis() - date > 100){
-      float Vitesse = Estime(Nfront);
+  void loop(){ //Programme principal mode Manu
+    if (millis() - date > 100){ //Au bout de 100ms à partir de la date précédente
+      float Vitesse = Estime(Nfront); // On estime la vitesse à partir de Nfront par l'appel d'un fonction ayant Nfront comme argument
       
-      int variable = analogRead(A3);
-      int Commande = map(variable, 0 , 1023, 0 ,255);
-      analogWrite(PWM,Commande);
-      float Alpha = ((float) 100*Commande/255;
+      int variable = analogRead(A3); //On fait une acquisition sur la branche A3
+      int Commande = map(variable, 0 , 1023, 0 ,255); //Mise à l'échelle
+      analogWrite(PWM,Commande); //On écrit Commande sur la branche PWM
+      float Alpha = ((float) 100*Commande/255; //On calcule le rapport cyclique en %
       
-      Affiche(Vitesse, Alpha)
+      Affiche(Vitesse, Alpha) //On affiche "Vitesse" et "Alpha"
       }
   }
   
- void compter(){
- Nfront++
- }
+ void compter(){ //Appeler à chaque détection de front (montant et descendant)
+ Nfront++; //La fonction "Compter" est de type void (elle ne renvoie rien)
+ } //Nfront est une variable globale
  
- float Estime(int, N){
+ float Estime(int, N){ //Fonction de type float car elle renvoie un nombre à virgule 
+//On estime la vitesse avec la valeur actuelle de N (argument de la fonction)
  float estimation = (float) N / Ntotal / 0.1*60;
- date = millis();
- return(estimation);
+ date = millis(); //On affecte à "date" la date de mesure
+ return(estimation); //La fonction renvoie "estimation" 
  }
  
- void Affiche ( float v, float a){
-    Serial.print(v); Serial.print(",");
-    Serial.print(a); Serial.print();
+ void Affiche ( float v, float a){ //Fonction de type void car elle ne renvoie rien
+    Serial.print(v); Serial.print(","); //On affiche v
+    Serial.print(a); Serial.print(); //On affiche a
     
  
  
